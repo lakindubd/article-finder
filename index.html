@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Search App</title>
+</head>
+<body>
+    <h1>Search Articles</h1>
+    <input type="text" id="searchQuery" placeholder="Enter topic">
+    <button onclick="search()">Search</button>
+    <div id="results"></div>
+
+    <script>
+        async function search() {
+            const query = document.getElementById('searchQuery').value;
+            const response = await fetch(`http://localhost:3000/search?q=${query}`);
+            const data = await response.json();
+            displayResults(data.items);
+        }
+
+        function displayResults(items) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = `<h3><a href="${item.link}">${item.title}</a></h3><p>${item.snippet}</p>`;
+                resultsDiv.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
