@@ -1,8 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const axios = require('axios');
+const puppeteer = require('puppeteer');
 const cors = require('cors');
-
 const app = express();
 const PORT = 3000;
 
@@ -10,18 +9,25 @@ app.use(cors());
 
 app.get('/search', async (req, res) => {
     const query = req.query.q;
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.CUSTOM_SEARCH_ENGINE_ID;
+    const url = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
 
     try {
-        const response = await axios.get('https://www.googleapis.com/customsearch/v1', {
-            params: {
-                key: apiKey,
-                cx: cx,
-                q: query
-            }
+        const browser = await puppeteer.launch({ headless: false });
+        const page = await browser.newPage();
+        await page.goto(url);
+        const results = await page.evaluate(() => {
+            const articles = [];
+            document.querySelectorAll('.gs_ri').forEach(article => {
+                const title = article.querySelector('.gs_rt a')?.textContent || 'No title';
+                const link = article.querySelector('.gs_rt a')?.href || '#';
+                const snippet = article.querySelector('.gs_rs')?.textContent || 'No snippet';
+                articles.push({ title, link, snippet });
+            });
+            return articles;
         });
-        res.json(response.data);
+
+        await browser.close();
+        res.json(results);
     } catch (error) {
         res.status(500).send('Error fetching data');
     }
