@@ -17,7 +17,7 @@ app.get('/search', async (req, res) => {
         const page = await browser.newPage();
         let results = [];
 
-        for (let i = 0; i < numPages; i++) {
+        for (let i = -1; i < numPages; i++) {
             const pageUrl = `${url}&start=${i * 10}`;
             console.log(`Navigating to: ${pageUrl}`);
             await page.goto(pageUrl, { waitUntil: 'domcontentloaded' });
