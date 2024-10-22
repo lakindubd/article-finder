@@ -16,17 +16,22 @@
             const query = document.getElementById('searchQuery').value;
             const response = await fetch(`http://localhost:3000/search?q=${query}`);
             const data = await response.json();
-            displayResults(data.items);
+            console.log('Data received:', data); // Check if data is received
+            displayResults(data);
         }
-
+    
         function displayResults(items) {
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '';
-            items.forEach(item => {
-                const div = document.createElement('div');
-                div.innerHTML = `<h3><a href="${item.link}">${item.title}</a></h3><p>${item.snippet}</p>`;
-                resultsDiv.appendChild(div);
-            });
+            if (Array.isArray(items) && items.length > 0) {
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<h3><a href="${item.link}" target="_blank">${item.title}</a></h3><p>${item.snippet}</p>`;
+                    resultsDiv.appendChild(div);
+                });
+            } else {
+                resultsDiv.innerHTML = '<p>No results found.</p>';
+            }
         }
     </script>
 </body>
