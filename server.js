@@ -12,7 +12,7 @@ app.get('/search', async (req, res) => {
     const url = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
 
     try {
-        const browser = await puppeteer.launch({ headless: false });
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
         await page.goto(url);
         const results = await page.evaluate(() => {
