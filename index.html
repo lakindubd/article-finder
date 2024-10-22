@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Search App</title>
+    <title>Google Scholar Search App</title>
 </head>
 <body>
     <h1>Search Articles</h1>
     <input type="text" id="searchQuery" placeholder="Enter topic">
+    <input type="number" id="numPages" placeholder="Number of pages" min="1" value="1">
     <button onclick="search()">Search</button>
     <div id="results"></div>
 
     <script>
         async function search() {
             const query = document.getElementById('searchQuery').value;
-            const response = await fetch(`http://localhost:3000/search?q=${query}`);
+            const pages = document.getElementById('numPages').value;
+            const response = await fetch(`http://localhost:3000/search?q=${query}&pages=${pages}`);
             const data = await response.json();
-            console.log('Data received:', data); // Check if data is received
+            console.log('Data received:', data);
             displayResults(data);
         }
     
